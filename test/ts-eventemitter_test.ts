@@ -1,14 +1,13 @@
 ///<reference path="../typings/tsd.d.ts" />
-import tsee = require('../lib/ts-eventemitter');
+import TsEventEmitter = require('../src/ts-eventemitter');
 import nodeunit = require('nodeunit');
 import events = require('events');
 var EventEmitter = events.EventEmitter;
 
-
-interface TestEventEmitter extends tsee.TsEventEmitterBase {
-    event(event: 'noArgEvent'): tsee.TsEvent0;
-    event(event: 'oneArgEvent'): tsee.TsEvent1<string>;
-    event(event: 'twoArgsEvent'): tsee.TsEvent2<number, string>;
+interface TestEventEmitter extends TsEventEmitter.Interface {
+    event(event: 'noArgEvent'): TsEventEmitter.Event0;
+    event(event: 'oneArgEvent'): TsEventEmitter.Event1<string>;
+    event(event: 'twoArgsEvent'): TsEventEmitter.Event2<number, string>;
     event(name: string): void;
 }
 
@@ -46,7 +45,7 @@ module.exports = {
         callback();
     },
     'delegates a function call which is not linked to a specific event to the corresponding EventEmitter function': (test: nodeunit.Test) => {
-        var testEventEmitter: TestEventEmitter = new tsee.TsEventEmitter();
+        var testEventEmitter: TestEventEmitter = TsEventEmitter.create();
 
         testEventEmitter.removeAllListeners();
         test.strictEqual(functionData.removeAllListeners.callCount, 1);
@@ -59,7 +58,7 @@ module.exports = {
         test.done();
     },
     'can handle an event without argument': (test: nodeunit.Test) => {
-        var testEventEmitter: TestEventEmitter = new tsee.TsEventEmitter(),
+        var testEventEmitter: TestEventEmitter = TsEventEmitter.create(),
             noArgEvent = testEventEmitter.event('noArgEvent'),
             onListener = () => {},
             addListener = () => {},
@@ -102,7 +101,7 @@ module.exports = {
         test.done();
     },
     'can handle an event with an argument': (test: nodeunit.Test) => {
-        var testEventEmitter: TestEventEmitter = new tsee.TsEventEmitter(),
+        var testEventEmitter: TestEventEmitter = TsEventEmitter.create(),
             oneArgEvent = testEventEmitter.event('oneArgEvent'),
             onListener = (s: string) => {},
             addListener = (s: string) => {},
@@ -145,7 +144,7 @@ module.exports = {
         test.done();
     },
     'can handle an event with two arguments': (test: nodeunit.Test) => {
-        var testEventEmitter: TestEventEmitter = new tsee.TsEventEmitter(),
+        var testEventEmitter: TestEventEmitter = TsEventEmitter.create(),
             twoArgsEvent = testEventEmitter.event('twoArgsEvent'),
             onListener = (n: number, s: string) => {},
             addListener = (n: number, s: string) => {},
