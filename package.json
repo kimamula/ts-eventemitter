@@ -4,7 +4,7 @@
   "description": "A thin TypeScript wrapper for EventEmitter which provides with type-safety",
   "main": "dist/ts-eventemitter.js",
   "scripts": {
-    "prepublish": "tsc -d src/ts-eventemitter.ts -m commonjs --outDir dist && node dts-bundle.js",
+    "prepublish": "tsc && node dts-bundle.js",
     "test": "tsc test/*.ts -m commonjs && nodeunit test"
   },
   "keywords": [
@@ -12,7 +12,7 @@
     "TypeScript"
   ],
   "author": "kimamula <kenji.imamula@gmail.com>",
-  "license": "MIT",
+  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "https://github.com/kimamula/ts-eventemitter"
@@ -21,6 +21,6 @@
     "dts-bundle": "^0.2.0",
     "nodeunit": "0.9.0",
     "tsd": "0.5.7",
-    "typescript": "1.3.0"
+    "typescript": "^1.5.0-beta"
   }
 }

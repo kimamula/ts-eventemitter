@@ -1,13 +1,12 @@
 ///<reference path="../typings/tsd.d.ts" />
-import TsEventEmitter = require('../src/ts-eventemitter');
-import nodeunit = require('nodeunit');
-import events = require('events');
-var EventEmitter = events.EventEmitter;
+import {TsEventEmitter, Event0, Event1, Event2} from '../src/ts-eventemitter';
+import {Test} from 'nodeunit';
+import {EventEmitter} from 'events';
 
-interface TestEventEmitter extends TsEventEmitter.Interface {
-    event(event: 'noArgEvent'): TsEventEmitter.Event0;
-    event(event: 'oneArgEvent'): TsEventEmitter.Event1<string>;
-    event(event: 'twoArgsEvent'): TsEventEmitter.Event2<number, string>;
+interface TestEventEmitter extends TsEventEmitter {
+    event(event: 'noArgEvent'): Event0;
+    event(event: 'oneArgEvent'): Event1<string>;
+    event(event: 'twoArgsEvent'): Event2<number, string>;
     event(name: string): void;
 }
 
@@ -44,7 +43,7 @@ module.exports = {
         });
         callback();
     },
-    'delegates a function call which is not linked to a specific event to the corresponding EventEmitter function': (test: nodeunit.Test) => {
+    'delegates a function call which is not linked to a specific event to the corresponding EventEmitter function': (test: Test) => {
         var testEventEmitter: TestEventEmitter = TsEventEmitter.create();
 
         testEventEmitter.removeAllListeners();
@@ -57,7 +56,7 @@ module.exports = {
 
         test.done();
     },
-    'can handle an event without argument': (test: nodeunit.Test) => {
+    'can handle an event without argument': (test: Test) => {
         var testEventEmitter: TestEventEmitter = TsEventEmitter.create(),
             noArgEvent = testEventEmitter.event('noArgEvent'),
             onListener = () => {},
@@ -100,7 +99,7 @@ module.exports = {
 
         test.done();
     },
-    'can handle an event with an argument': (test: nodeunit.Test) => {
+    'can handle an event with an argument': (test: Test) => {
         var testEventEmitter: TestEventEmitter = TsEventEmitter.create(),
             oneArgEvent = testEventEmitter.event('oneArgEvent'),
             onListener = (s: string) => {},
@@ -143,7 +142,7 @@ module.exports = {
 
         test.done();
     },
-    'can handle an event with two arguments': (test: nodeunit.Test) => {
+    'can handle an event with two arguments': (test: Test) => {
         var testEventEmitter: TestEventEmitter = TsEventEmitter.create(),
             twoArgsEvent = testEventEmitter.event('twoArgsEvent'),
             onListener = (n: number, s: string) => {},

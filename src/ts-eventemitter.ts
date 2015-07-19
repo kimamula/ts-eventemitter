@@ -1,12 +1,7 @@
 ///<reference path="../typings/node/node.d.ts" />
-import events = require('events');
-var EventEmitter = events.EventEmitter;
+import {EventEmitter} from 'events';
 
-export function create(): Interface {
-    return new TsEventEmitter();
-}
-
-class TsEventEmitter implements Interface {
+class TsEventEmitterImpl implements TsEventEmitter {
     private eventEmitter: NodeJS.EventEmitter;
     constructor() {
         this.eventEmitter = new EventEmitter();
@@ -57,10 +52,16 @@ class EventImpl {
     }
 }
 
-export interface Interface {
+export interface TsEventEmitter {
     event(name: string): any;
     removeAllListeners(): void;
     setMaxListeners(n: number): void;
+}
+
+export module TsEventEmitter {
+    export function create(): TsEventEmitter {
+        return new TsEventEmitterImpl();
+    }
 }
 
 export interface Event0 {

@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "declaration": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "noEmitOnError": true,
+        "outDir": "dist"
+    },
+    "files": [
+        "./src/ts-eventemitter.ts"
+    ]
+}
