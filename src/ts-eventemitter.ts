@@ -7,7 +7,7 @@ class TsEventEmitterImpl implements TsEventEmitter {
         this.eventEmitter = new EventEmitter();
     }
     event(name: string): any {
-        return new EventImpl(this.eventEmitter, name);
+        return new EventImpl(this, this.eventEmitter, name);
     }
     removeAllListeners(): void {
         this.eventEmitter.removeAllListeners();
@@ -18,33 +18,33 @@ class TsEventEmitterImpl implements TsEventEmitter {
 }
 
 class EventImpl {
-    constructor(private eventEmitter: NodeJS.EventEmitter, private name: string) {
+    constructor(private tsEventEmitter: TsEventEmitter, private eventEmitter: NodeJS.EventEmitter, private name: string) {
     }
-    on(listener: Function): EventImpl {
+    on(listener: Function): TsEventEmitter {
         this.eventEmitter.on(this.name, listener);
-        return this;
+        return this.tsEventEmitter;
     }
-    addListener(listener: Function): EventImpl {
+    addListener(listener: Function): TsEventEmitter {
         this.eventEmitter.addListener(this.name, listener);
-        return this;
+        return this.tsEventEmitter;
     }
-    off(listener: Function): EventImpl {
+    off(listener: Function): TsEventEmitter {
         return this.removeListener(listener);
     }
-    removeListener(listener: Function): EventImpl {
+    removeListener(listener: Function): TsEventEmitter {
         this.eventEmitter.removeListener(this.name, listener);
-        return this;
+        return this.tsEventEmitter;
     }
-    removeAllListeners(): EventImpl {
+    removeAllListeners(): TsEventEmitter {
         this.eventEmitter.removeAllListeners(this.name);
-        return this;
+        return this.tsEventEmitter;
     }
     listeners(): Function[] {
         return this.eventEmitter.listeners(this.name);
     }
-    once(listener: Function): EventImpl {
+    once(listener: Function): TsEventEmitter {
         this.eventEmitter.once(this.name, listener);
-        return this;
+        return this.tsEventEmitter;
     }
     emit(...args: any[]): boolean {
         args.unshift(this.name);
@@ -53,7 +53,7 @@ class EventImpl {
 }
 
 export interface TsEventEmitter {
-    event(name: string): any;
+    event(name: string): EventBase<TsEventEmitter>;
     removeAllListeners(): void;
     setMaxListeners(n: number): void;
 }
@@ -64,35 +64,38 @@ export module TsEventEmitter {
     }
 }
 
-export interface Event0 {
-    on(listener: () => any): Event0;
-    addListener(listener: () => any): Event0;
-    off(listener: () => any): Event0;
-    removeListener(listener: () => any): Event0;
-    removeAllListeners(): Event0;
+export interface EventBase<E extends TsEventEmitter> {
+}
+
+export interface Event0<E extends TsEventEmitter> extends EventBase<E> {
+    on(listener: () => any): E;
+    addListener(listener: () => any): E;
+    off(listener: () => any): E;
+    removeListener(listener: () => any): E;
+    removeAllListeners(): E;
     listeners(): {() : any}[];
-    once(listener: () => any): Event0;
+    once(listener: () => any): E;
     emit(): boolean;
 }
 
-export interface Event1<T1> {
-    on(listener: (arg1: T1) => any): Event1<T1>;
-    addListener(listener: (arg1: T1) => any): Event1<T1>;
-    off(listener: (arg1: T1) => any): Event1<T1>;
-    removeListener(listener: (arg1: T1) => any): Event1<T1>;
-    removeAllListeners(): Event1<T1>;
+export interface Event1<E extends TsEventEmitter, T1> extends EventBase<E> {
+    on(listener: (arg1: T1) => any): E;
+    addListener(listener: (arg1: T1) => any): E;
+    off(listener: (arg1: T1) => any): E;
+    removeListener(listener: (arg1: T1) => any): E;
+    removeAllListeners(): E;
     listeners(): {(arg1: T1) : any}[];
-    once(listener: (arg1: T1) => any): Event1<T1>;
+    once(listener: (arg1: T1) => any): E;
     emit(arg1: T1): boolean;
 }
 
-export interface Event2<T1, T2> {
-    on(listener: (arg1: T1, arg2: T2) => any): Event2<T1, T2>;
-    addListener(listener: (arg1: T1, arg2: T2) => any): Event2<T1, T2>;
-    off(listener: (arg1: T1, arg2: T2) => any): Event2<T1, T2>;
-    removeListener(listener: (arg1: T1, arg2: T2) => any): Event2<T1, T2>;
-    removeAllListeners(): Event2<T1, T2>;
+export interface Event2<E extends TsEventEmitter, T1, T2> extends EventBase<E> {
+    on(listener: (arg1: T1, arg2: T2) => any): E;
+    addListener(listener: (arg1: T1, arg2: T2) => any): E;
+    off(listener: (arg1: T1, arg2: T2) => any): E;
+    removeListener(listener: (arg1: T1, arg2: T2) => any): E;
+    removeAllListeners(): E;
     listeners(): {(arg1: T1, arg2: T2): any}[];
-    once(listener: (arg1: T1, arg2: T2) => any): Event2<T1, T2>;
+    once(listener: (arg1: T1, arg2: T2) => any): E;
     emit(arg1: T1, arg2: T2): boolean;
 }

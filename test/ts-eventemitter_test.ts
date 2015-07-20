@@ -1,13 +1,13 @@
 ///<reference path="../typings/tsd.d.ts" />
-import {TsEventEmitter, Event0, Event1, Event2} from '../src/ts-eventemitter';
+import {TsEventEmitter, EventBase, Event0, Event1, Event2} from '../src/ts-eventemitter';
 import {Test} from 'nodeunit';
 import {EventEmitter} from 'events';
 
 interface TestEventEmitter extends TsEventEmitter {
-    event(event: 'noArgEvent'): Event0;
-    event(event: 'oneArgEvent'): Event1<string>;
-    event(event: 'twoArgsEvent'): Event2<number, string>;
-    event(name: string): void;
+    event(event: 'noArgEvent'): Event0<TestEventEmitter>;
+    event(event: 'oneArgEvent'): Event1<TestEventEmitter, string>;
+    event(event: 'twoArgsEvent'): Event2<TestEventEmitter, number, string>;
+    event(name: string): EventBase<TestEventEmitter>;
 }
 
 // Store data of each function for test
@@ -65,23 +65,23 @@ module.exports = {
             removeListener = () => {},
             onceListener = () => {};
 
-        test.strictEqual(noArgEvent.on(onListener), noArgEvent);
+        test.strictEqual(noArgEvent.on(onListener), testEventEmitter);
         test.strictEqual(functionData.on.callCount, 1);
         test.deepEqual(functionData.on.arguments[0], ['noArgEvent', onListener]);
 
-        test.strictEqual(noArgEvent.addListener(addListener), noArgEvent);
+        test.strictEqual(noArgEvent.addListener(addListener), testEventEmitter);
         test.strictEqual(functionData.addListener.callCount, 1);
         test.deepEqual(functionData.addListener.arguments[0], ['noArgEvent', addListener]);
 
-        test.strictEqual(noArgEvent.off(offListener), noArgEvent);
+        test.strictEqual(noArgEvent.off(offListener), testEventEmitter);
         test.strictEqual(functionData.removeListener.callCount, 1);
         test.deepEqual(functionData.removeListener.arguments[0], ['noArgEvent', offListener]);
 
-        test.strictEqual(noArgEvent.removeListener(removeListener), noArgEvent);
+        test.strictEqual(noArgEvent.removeListener(removeListener), testEventEmitter);
         test.strictEqual(functionData.removeListener.callCount, 2);
         test.deepEqual(functionData.removeListener.arguments[1], ['noArgEvent', removeListener]);
 
-        test.strictEqual(noArgEvent.removeAllListeners(), noArgEvent);
+        test.strictEqual(noArgEvent.removeAllListeners(), testEventEmitter);
         test.strictEqual(functionData.removeAllListeners.callCount, 1);
         test.deepEqual(functionData.removeAllListeners.arguments[0], ['noArgEvent']);
 
@@ -89,7 +89,7 @@ module.exports = {
         test.strictEqual(functionData.listeners.callCount, 1);
         test.deepEqual(functionData.listeners.arguments[0], ['noArgEvent']);
 
-        test.strictEqual(noArgEvent.once(onceListener), noArgEvent);
+        test.strictEqual(noArgEvent.once(onceListener), testEventEmitter);
         test.strictEqual(functionData.once.callCount, 1);
         test.deepEqual(functionData.once.arguments[0], ['noArgEvent', onceListener]);
 
@@ -108,23 +108,23 @@ module.exports = {
             removeListener = (s: string) => {},
             onceListener = (s: string) => {};
 
-        test.strictEqual(oneArgEvent.on(onListener), oneArgEvent);
+        test.strictEqual(oneArgEvent.on(onListener), testEventEmitter);
         test.strictEqual(functionData.on.callCount, 1);
         test.deepEqual(functionData.on.arguments[0], ['oneArgEvent', onListener]);
 
-        test.strictEqual(oneArgEvent.addListener(addListener), oneArgEvent);
+        test.strictEqual(oneArgEvent.addListener(addListener), testEventEmitter);
         test.strictEqual(functionData.addListener.callCount, 1);
         test.deepEqual(functionData.addListener.arguments[0], ['oneArgEvent', addListener]);
 
-        test.strictEqual(oneArgEvent.off(offListener), oneArgEvent);
+        test.strictEqual(oneArgEvent.off(offListener), testEventEmitter);
         test.strictEqual(functionData.removeListener.callCount, 1);
         test.deepEqual(functionData.removeListener.arguments[0], ['oneArgEvent', offListener]);
 
-        test.strictEqual(oneArgEvent.removeListener(removeListener), oneArgEvent);
+        test.strictEqual(oneArgEvent.removeListener(removeListener), testEventEmitter);
         test.strictEqual(functionData.removeListener.callCount, 2);
         test.deepEqual(functionData.removeListener.arguments[1], ['oneArgEvent', removeListener]);
 
-        test.strictEqual(oneArgEvent.removeAllListeners(), oneArgEvent);
+        test.strictEqual(oneArgEvent.removeAllListeners(), testEventEmitter);
         test.strictEqual(functionData.removeAllListeners.callCount, 1);
         test.deepEqual(functionData.removeAllListeners.arguments[0], ['oneArgEvent']);
 
@@ -132,7 +132,7 @@ module.exports = {
         test.strictEqual(functionData.listeners.callCount, 1);
         test.deepEqual(functionData.listeners.arguments[0], ['oneArgEvent']);
 
-        test.strictEqual(oneArgEvent.once(onceListener), oneArgEvent);
+        test.strictEqual(oneArgEvent.once(onceListener), testEventEmitter);
         test.strictEqual(functionData.once.callCount, 1);
         test.deepEqual(functionData.once.arguments[0], ['oneArgEvent', onceListener]);
 
@@ -151,23 +151,23 @@ module.exports = {
             removeListener = (n: number, s: string) => {},
             onceListener = (n: number, s: string) => {};
 
-        test.strictEqual(twoArgsEvent.on(onListener), twoArgsEvent);
+        test.strictEqual(twoArgsEvent.on(onListener), testEventEmitter);
         test.strictEqual(functionData.on.callCount, 1);
         test.deepEqual(functionData.on.arguments[0], ['twoArgsEvent', onListener]);
 
-        test.strictEqual(twoArgsEvent.addListener(addListener), twoArgsEvent);
+        test.strictEqual(twoArgsEvent.addListener(addListener), testEventEmitter);
         test.strictEqual(functionData.addListener.callCount, 1);
         test.deepEqual(functionData.addListener.arguments[0], ['twoArgsEvent', addListener]);
 
-        test.strictEqual(twoArgsEvent.off(offListener), twoArgsEvent);
+        test.strictEqual(twoArgsEvent.off(offListener), testEventEmitter);
         test.strictEqual(functionData.removeListener.callCount, 1);
         test.deepEqual(functionData.removeListener.arguments[0], ['twoArgsEvent', offListener]);
 
-        test.strictEqual(twoArgsEvent.removeListener(removeListener), twoArgsEvent);
+        test.strictEqual(twoArgsEvent.removeListener(removeListener), testEventEmitter);
         test.strictEqual(functionData.removeListener.callCount, 2);
         test.deepEqual(functionData.removeListener.arguments[1], ['twoArgsEvent', removeListener]);
 
-        test.strictEqual(twoArgsEvent.removeAllListeners(), twoArgsEvent);
+        test.strictEqual(twoArgsEvent.removeAllListeners(), testEventEmitter);
         test.strictEqual(functionData.removeAllListeners.callCount, 1);
         test.deepEqual(functionData.removeAllListeners.arguments[0], ['twoArgsEvent']);
 
@@ -175,7 +175,7 @@ module.exports = {
         test.strictEqual(functionData.listeners.callCount, 1);
         test.deepEqual(functionData.listeners.arguments[0], ['twoArgsEvent']);
 
-        test.strictEqual(twoArgsEvent.once(onceListener), twoArgsEvent);
+        test.strictEqual(twoArgsEvent.once(onceListener), testEventEmitter);
         test.strictEqual(functionData.once.callCount, 1);
         test.deepEqual(functionData.once.arguments[0], ['twoArgsEvent', onceListener]);
 
