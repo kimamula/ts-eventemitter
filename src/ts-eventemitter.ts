@@ -99,3 +99,25 @@ export interface Event2<E extends TsEventEmitter, T1, T2> extends EventBase<E> {
     once(listener: (arg1: T1, arg2: T2) => any): E;
     emit(arg1: T1, arg2: T2): boolean;
 }
+
+export interface Event3<E extends TsEventEmitter, T1, T2, T3> extends EventBase<E> {
+    on(listener: (arg1: T1, arg2: T2, arg3: T3) => any): E;
+    addListener(listener: (arg1: T1, arg2: T2, arg3: T3) => any): E;
+    off(listener: (arg1: T1, arg2: T2, arg3: T3) => any): E;
+    removeListener(listener: (arg1: T1, arg2: T2, arg3: T3) => any): E;
+    removeAllListeners(): E;
+    listeners(): {(arg1: T1, arg2: T2, arg3: T3): any}[];
+    once(listener: (arg1: T1, arg2: T2, arg3: T3) => any): E;
+    emit(arg1: T1, arg2: T2, arg3: T3): boolean;
+}
+
+export interface Event4<E extends TsEventEmitter, T1, T2, T3, T4> extends EventBase<E> {
+    on(listener: (arg1: T1, arg2: T2, arg3: T3, arg4: T4) => any): E;
+    addListener(listener: (arg1: T1, arg2: T2, arg3: T3, arg4: T4) => any): E;
+    off(listener: (arg1: T1, arg2: T2, arg3: T3, arg4: T4) => any): E;
+    removeListener(listener: (arg1: T1, arg2: T2, arg3: T3, arg4: T4) => any): E;
+    removeAllListeners(): E;
+    listeners(): {(arg1: T1, arg2: T2, arg3: T3, arg4: T4): any}[];
+    once(listener: (arg1: T1, arg2: T2, arg3: T3, arg4: T4) => any): E;
+    emit(arg1: T1, arg2: T2, arg3: T3, arg4: T4): boolean;
+}

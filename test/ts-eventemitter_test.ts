@@ -1,5 +1,5 @@
 ///<reference path="../typings/tsd.d.ts" />
-import {TsEventEmitter, EventBase, Event0, Event1, Event2} from '../src/ts-eventemitter';
+import {TsEventEmitter, EventBase, Event0, Event1, Event2, Event3, Event4} from '../src/ts-eventemitter';
 import {Test} from 'nodeunit';
 import {EventEmitter} from 'events';
 
@@ -7,6 +7,8 @@ interface TestEventEmitter extends TsEventEmitter {
     event(event: 'noArgEvent'): Event0<TestEventEmitter>;
     event(event: 'oneArgEvent'): Event1<TestEventEmitter, string>;
     event(event: 'twoArgsEvent'): Event2<TestEventEmitter, number, string>;
+    event(event: 'threeArgsEvent'): Event3<TestEventEmitter, number, string, boolean>;
+    event(event: 'fourArgsEvent'): Event4<TestEventEmitter, number, string, boolean, number[]>;
     event(name: string): EventBase<TestEventEmitter>;
 }
 
@@ -182,6 +184,92 @@ module.exports = {
         test.strictEqual(twoArgsEvent.emit(2, 'str'), true);
         test.strictEqual(functionData.emit.callCount, 1);
         test.deepEqual(functionData.emit.arguments[0], ['twoArgsEvent', 2, 'str']);
+
+        test.done();
+    },
+    'can handle an event with three arguments': (test: Test) => {
+        var testEventEmitter: TestEventEmitter = TsEventEmitter.create(),
+            threeArgsEvent = testEventEmitter.event('threeArgsEvent'),
+            onListener = (n: number, s: string, b: boolean) => {},
+            addListener = (n: number, s: string, b: boolean) => {},
+            offListener = (n: number, s: string, b: boolean) => {},
+            removeListener = (n: number, s: string, b: boolean) => {},
+            onceListener = (n: number, s: string, b: boolean) => {};
+
+        test.strictEqual(threeArgsEvent.on(onListener), testEventEmitter);
+        test.strictEqual(functionData.on.callCount, 1);
+        test.deepEqual(functionData.on.arguments[0], ['threeArgsEvent', onListener]);
+
+        test.strictEqual(threeArgsEvent.addListener(addListener), testEventEmitter);
+        test.strictEqual(functionData.addListener.callCount, 1);
+        test.deepEqual(functionData.addListener.arguments[0], ['threeArgsEvent', addListener]);
+
+        test.strictEqual(threeArgsEvent.off(offListener), testEventEmitter);
+        test.strictEqual(functionData.removeListener.callCount, 1);
+        test.deepEqual(functionData.removeListener.arguments[0], ['threeArgsEvent', offListener]);
+
+        test.strictEqual(threeArgsEvent.removeListener(removeListener), testEventEmitter);
+        test.strictEqual(functionData.removeListener.callCount, 2);
+        test.deepEqual(functionData.removeListener.arguments[1], ['threeArgsEvent', removeListener]);
+
+        test.strictEqual(threeArgsEvent.removeAllListeners(), testEventEmitter);
+        test.strictEqual(functionData.removeAllListeners.callCount, 1);
+        test.deepEqual(functionData.removeAllListeners.arguments[0], ['threeArgsEvent']);
+
+        test.deepEqual(threeArgsEvent.listeners(), []);
+        test.strictEqual(functionData.listeners.callCount, 1);
+        test.deepEqual(functionData.listeners.arguments[0], ['threeArgsEvent']);
+
+        test.strictEqual(threeArgsEvent.once(onceListener), testEventEmitter);
+        test.strictEqual(functionData.once.callCount, 1);
+        test.deepEqual(functionData.once.arguments[0], ['threeArgsEvent', onceListener]);
+
+        test.strictEqual(threeArgsEvent.emit(2, 'str', true), true);
+        test.strictEqual(functionData.emit.callCount, 1);
+        test.deepEqual(functionData.emit.arguments[0], ['threeArgsEvent', 2, 'str', true]);
+
+        test.done();
+    },
+    'can handle an event with four arguments': (test: Test) => {
+        var testEventEmitter: TestEventEmitter = TsEventEmitter.create(),
+            fourArgsEvent = testEventEmitter.event('fourArgsEvent'),
+            onListener = (n: number, s: string, b: boolean, ns: number[]) => {},
+            addListener = (n: number, s: string, b: boolean, ns: number[]) => {},
+            offListener = (n: number, s: string, b: boolean, ns: number[]) => {},
+            removeListener = (n: number, s: string, b: boolean, ns: number[]) => {},
+            onceListener = (n: number, s: string, b: boolean, ns: number[]) => {};
+
+        test.strictEqual(fourArgsEvent.on(onListener), testEventEmitter);
+        test.strictEqual(functionData.on.callCount, 1);
+        test.deepEqual(functionData.on.arguments[0], ['fourArgsEvent', onListener]);
+
+        test.strictEqual(fourArgsEvent.addListener(addListener), testEventEmitter);
+        test.strictEqual(functionData.addListener.callCount, 1);
+        test.deepEqual(functionData.addListener.arguments[0], ['fourArgsEvent', addListener]);
+
+        test.strictEqual(fourArgsEvent.off(offListener), testEventEmitter);
+        test.strictEqual(functionData.removeListener.callCount, 1);
+        test.deepEqual(functionData.removeListener.arguments[0], ['fourArgsEvent', offListener]);
+
+        test.strictEqual(fourArgsEvent.removeListener(removeListener), testEventEmitter);
+        test.strictEqual(functionData.removeListener.callCount, 2);
+        test.deepEqual(functionData.removeListener.arguments[1], ['fourArgsEvent', removeListener]);
+
+        test.strictEqual(fourArgsEvent.removeAllListeners(), testEventEmitter);
+        test.strictEqual(functionData.removeAllListeners.callCount, 1);
+        test.deepEqual(functionData.removeAllListeners.arguments[0], ['fourArgsEvent']);
+
+        test.deepEqual(fourArgsEvent.listeners(), []);
+        test.strictEqual(functionData.listeners.callCount, 1);
+        test.deepEqual(functionData.listeners.arguments[0], ['fourArgsEvent']);
+
+        test.strictEqual(fourArgsEvent.once(onceListener), testEventEmitter);
+        test.strictEqual(functionData.once.callCount, 1);
+        test.deepEqual(functionData.once.arguments[0], ['fourArgsEvent', onceListener]);
+
+        test.strictEqual(fourArgsEvent.emit(2, 'str', true, [3, 4]), true);
+        test.strictEqual(functionData.emit.callCount, 1);
+        test.deepEqual(functionData.emit.arguments[0], ['fourArgsEvent', 2, 'str', true, [3, 4]]);
 
         test.done();
     }
