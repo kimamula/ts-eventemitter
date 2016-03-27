@@ -1,6 +1,6 @@
 {
   "name": "ts-eventemitter",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A thin TypeScript wrapper for EventEmitter which provides with type-safety",
   "main": "./dist/ts-eventemitter.js",
   "typings": "./dist/ts-eventemitter.d.ts",
