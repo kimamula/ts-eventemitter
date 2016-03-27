@@ -1,4 +1,3 @@
-///<reference path="../typings/node/node.d.ts" />
 import {EventEmitter} from 'events';
 
 class TsEventEmitterImpl implements TsEventEmitter {
@@ -52,50 +51,38 @@ class EventImpl {
     }
 }
 
-export interface TsEventEmitter {
-    event(name: string): EventBase<TsEventEmitter>;
+interface TsEventEmitter {
+    event(name: string): TsEventEmitter.Event;
     removeAllListeners(): void;
     setMaxListeners(n: number): void;
 }
 
-export module TsEventEmitter {
+namespace TsEventEmitter {
     export function create(): TsEventEmitter {
         return new TsEventEmitterImpl();
     }
+    export interface Event {
+    }
+    export interface Event0<E extends TsEventEmitter> extends Event {
+        on(listener: () => any): E;
+        addListener(listener: () => any): E;
+        off(listener: () => any): E;
+        removeListener(listener: () => any): E;
+        removeAllListeners(): E;
+        listeners(): {() : any}[];
+        once(listener: () => any): E;
+        emit(): boolean;
+    }
+    export interface Event1<E extends TsEventEmitter, T> extends Event {
+        on(listener: (arg: T) => any): E;
+        addListener(listener: (arg: T) => any): E;
+        off(listener: (arg: T) => any): E;
+        removeListener(listener: (arg: T) => any): E;
+        removeAllListeners(): E;
+        listeners(): {(arg: T) : any}[];
+        once(listener: (arg: T) => any): E;
+        emit(arg: T): boolean;
+    }
 }
 
-export interface EventBase<E extends TsEventEmitter> {
-}
-
-export interface Event0<E extends TsEventEmitter> extends EventBase<E> {
-    on(listener: () => any): E;
-    addListener(listener: () => any): E;
-    off(listener: () => any): E;
-    removeListener(listener: () => any): E;
-    removeAllListeners(): E;
-    listeners(): {() : any}[];
-    once(listener: () => any): E;
-    emit(): boolean;
-}
-
-export interface Event1<E extends TsEventEmitter, T1> extends EventBase<E> {
-    on(listener: (arg1: T1) => any): E;
-    addListener(listener: (arg1: T1) => any): E;
-    off(listener: (arg1: T1) => any): E;
-    removeListener(listener: (arg1: T1) => any): E;
-    removeAllListeners(): E;
-    listeners(): {(arg1: T1) : any}[];
-    once(listener: (arg1: T1) => any): E;
-    emit(arg1: T1): boolean;
-}
-
-export interface Event2<E extends TsEventEmitter, T1, T2> extends EventBase<E> {
-    on(listener: (arg1: T1, arg2: T2) => any): E;
-    addListener(listener: (arg1: T1, arg2: T2) => any): E;
-    off(listener: (arg1: T1, arg2: T2) => any): E;
-    removeListener(listener: (arg1: T1, arg2: T2) => any): E;
-    removeAllListeners(): E;
-    listeners(): {(arg1: T1, arg2: T2): any}[];
-    once(listener: (arg1: T1, arg2: T2) => any): E;
-    emit(arg1: T1, arg2: T2): boolean;
-}
+export default TsEventEmitter;

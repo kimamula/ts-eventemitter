@@ -1,31 +1,29 @@
-///<reference path="../typings/tsd.d.ts" />
-import {TsEventEmitter, EventBase, Event0, Event1, Event2} from '../src/ts-eventemitter';
+import TsEventEmitter from '../src/ts-eventemitter';
 import {Test} from 'nodeunit';
 import {EventEmitter} from 'events';
 
 interface TestEventEmitter extends TsEventEmitter {
-    event(event: 'noArgEvent'): Event0<TestEventEmitter>;
-    event(event: 'oneArgEvent'): Event1<TestEventEmitter, string>;
-    event(event: 'twoArgsEvent'): Event2<TestEventEmitter, number, string>;
-    event(name: string): EventBase<TestEventEmitter>;
+    event(event: 'noArgEvent'): TsEventEmitter.Event0<this>;
+    event(event: 'oneArgEvent'): TsEventEmitter.Event1<this, string>;
+    event(event: string): TsEventEmitter.Event;
 }
 
 // Store data of each function for test
-var functionData = {
-    'addListener': {'original': EventEmitter.prototype.addListener, 'callCount': 0, 'arguments':[], 'returnValue': null},
-    'on': {'original': EventEmitter.prototype.on, 'callCount': 0, 'arguments':[], 'returnValue': null},
-    'once': {'original': EventEmitter.prototype.once, 'callCount': 0, 'arguments':[], 'returnValue': null},
-    'removeListener': {'original': EventEmitter.prototype.removeListener, 'callCount': 0, 'arguments':[], 'returnValue': null},
-    'removeAllListeners': {'original': EventEmitter.prototype.removeAllListeners, 'callCount': 0, 'arguments':[], 'returnValue': null},
-    'setMaxListeners': {'original': EventEmitter.prototype.setMaxListeners, 'callCount': 0, 'arguments':[], 'returnValue': null},
-    'listeners': {'original': EventEmitter.prototype.listeners, 'callCount': 0, 'arguments':[], 'returnValue': []},
-    'emit': {'original': EventEmitter.prototype.emit, 'callCount': 0, 'arguments':[], 'returnValue': true}
+const functionData = {
+    'addListener': {'original': EventEmitter.prototype.addListener, 'callCount': 0, 'arguments':<any[]>[], 'returnValue': <any>null},
+    'on': {'original': EventEmitter.prototype.on, 'callCount': 0, 'arguments':<any[]>[], 'returnValue': <any>null},
+    'once': {'original': EventEmitter.prototype.once, 'callCount': 0, 'arguments':<any[]>[], 'returnValue': <any>null},
+    'removeListener': {'original': EventEmitter.prototype.removeListener, 'callCount': 0, 'arguments':<any[]>[], 'returnValue': <any>null},
+    'removeAllListeners': {'original': EventEmitter.prototype.removeAllListeners, 'callCount': 0, 'arguments':<any[]>[], 'returnValue': <any>null},
+    'setMaxListeners': {'original': EventEmitter.prototype.setMaxListeners, 'callCount': 0, 'arguments':<any[]>[], 'returnValue': <any>null},
+    'listeners': {'original': EventEmitter.prototype.listeners, 'callCount': 0, 'arguments':<any[]>[], 'returnValue': <any>[]},
+    'emit': {'original': EventEmitter.prototype.emit, 'callCount': 0, 'arguments':<any[]>[], 'returnValue': true}
 };
 
 module.exports = {
     'setUp': (callback: Function) => {
         Object.keys(functionData).forEach((name: string) => {
-            var data = functionData[name];
+            const data = functionData[name];
             EventEmitter.prototype[name] = (...args: any[]) => {
                 data.callCount += 1;
                 data.arguments.push(args);
@@ -36,7 +34,7 @@ module.exports = {
     },
     'tearDown': (callback: Function) => {
         Object.keys(functionData).forEach((name: string) => {
-            var data = functionData[name];
+            const data = functionData[name];
             EventEmitter.prototype[name] = data.original;
             data.callCount = 0;
             data.arguments.length = 0;
@@ -44,7 +42,7 @@ module.exports = {
         callback();
     },
     'delegates a function call which is not linked to a specific event to the corresponding EventEmitter function': (test: Test) => {
-        var testEventEmitter: TestEventEmitter = TsEventEmitter.create();
+        const testEventEmitter: TestEventEmitter = TsEventEmitter.create();
 
         testEventEmitter.removeAllListeners();
         test.strictEqual(functionData.removeAllListeners.callCount, 1);
@@ -57,7 +55,7 @@ module.exports = {
         test.done();
     },
     'can handle an event without argument': (test: Test) => {
-        var testEventEmitter: TestEventEmitter = TsEventEmitter.create(),
+        const testEventEmitter: TestEventEmitter = TsEventEmitter.create(),
             noArgEvent = testEventEmitter.event('noArgEvent'),
             onListener = () => {},
             addListener = () => {},
@@ -100,7 +98,7 @@ module.exports = {
         test.done();
     },
     'can handle an event with an argument': (test: Test) => {
-        var testEventEmitter: TestEventEmitter = TsEventEmitter.create(),
+        const testEventEmitter: TestEventEmitter = TsEventEmitter.create(),
             oneArgEvent = testEventEmitter.event('oneArgEvent'),
             onListener = (s: string) => {},
             addListener = (s: string) => {},
@@ -139,49 +137,6 @@ module.exports = {
         test.strictEqual(oneArgEvent.emit('string'), true);
         test.strictEqual(functionData.emit.callCount, 1);
         test.deepEqual(functionData.emit.arguments[0], ['oneArgEvent', 'string']);
-
-        test.done();
-    },
-    'can handle an event with two arguments': (test: Test) => {
-        var testEventEmitter: TestEventEmitter = TsEventEmitter.create(),
-            twoArgsEvent = testEventEmitter.event('twoArgsEvent'),
-            onListener = (n: number, s: string) => {},
-            addListener = (n: number, s: string) => {},
-            offListener = (n: number, s: string) => {},
-            removeListener = (n: number, s: string) => {},
-            onceListener = (n: number, s: string) => {};
-
-        test.strictEqual(twoArgsEvent.on(onListener), testEventEmitter);
-        test.strictEqual(functionData.on.callCount, 1);
-        test.deepEqual(functionData.on.arguments[0], ['twoArgsEvent', onListener]);
-
-        test.strictEqual(twoArgsEvent.addListener(addListener), testEventEmitter);
-        test.strictEqual(functionData.addListener.callCount, 1);
-        test.deepEqual(functionData.addListener.arguments[0], ['twoArgsEvent', addListener]);
-
-        test.strictEqual(twoArgsEvent.off(offListener), testEventEmitter);
-        test.strictEqual(functionData.removeListener.callCount, 1);
-        test.deepEqual(functionData.removeListener.arguments[0], ['twoArgsEvent', offListener]);
-
-        test.strictEqual(twoArgsEvent.removeListener(removeListener), testEventEmitter);
-        test.strictEqual(functionData.removeListener.callCount, 2);
-        test.deepEqual(functionData.removeListener.arguments[1], ['twoArgsEvent', removeListener]);
-
-        test.strictEqual(twoArgsEvent.removeAllListeners(), testEventEmitter);
-        test.strictEqual(functionData.removeAllListeners.callCount, 1);
-        test.deepEqual(functionData.removeAllListeners.arguments[0], ['twoArgsEvent']);
-
-        test.deepEqual(twoArgsEvent.listeners(), []);
-        test.strictEqual(functionData.listeners.callCount, 1);
-        test.deepEqual(functionData.listeners.arguments[0], ['twoArgsEvent']);
-
-        test.strictEqual(twoArgsEvent.once(onceListener), testEventEmitter);
-        test.strictEqual(functionData.once.callCount, 1);
-        test.deepEqual(functionData.once.arguments[0], ['twoArgsEvent', onceListener]);
-
-        test.strictEqual(twoArgsEvent.emit(2, 'str'), true);
-        test.strictEqual(functionData.emit.callCount, 1);
-        test.deepEqual(functionData.emit.arguments[0], ['twoArgsEvent', 2, 'str']);
 
         test.done();
     }

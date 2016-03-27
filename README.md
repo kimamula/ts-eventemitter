@@ -13,17 +13,16 @@ npm install ts-eventemitter
 * Define your EventEmitter.
 
 ```typescript
-/// <reference path="path/to/node_modules/ts-eventemitter/dist/ts-eventemitter.d.ts" />
-import {TsEventEmitter, EventBase, Event0, Event1, Event2} from 'ts-eventemitter';
+import TsEventEmitter from 'ts-eventemitter';
 
 export interface MyEventEmitter extends TsEventEmitter {
-    event(name: 'foo'): Event0<MyEventEmitter>;
-    event(name: 'bar'): Event1<MyEventEmitter, string>;
-    event(name: 'baz'): Event2<MyEventEmitter, number, string>;
-    event(name: string): EventBase<MyEventEmitter>;
+    event(name: 'foo'): TsEventEmitter.Event0<this>;
+    event(name: 'bar'): TsEventEmitter.Event1<this, string>;
+    event(name: 'baz'): TsEventEmitter.Event1<this, { id: number; name: string; }>;
+    event(name: string): TsEventEmitter.Event;
 }
 
-var MyEventEmitter: MyEventEmitter = TsEventEmitter.create();
+const MyEventEmitter: MyEventEmitter = TsEventEmitter.create();
 
 export default MyEventEmitter;
 ```
@@ -31,24 +30,22 @@ export default MyEventEmitter;
 * Use it.
 
 ```typescript
-/// <reference path="path/to/node_modules/ts-eventemitter/dist/ts-eventemitter.d.ts" />
-import {TsEventEmitter, Event0, Event1, Event2} from 'ts-eventemitter';
 import MyEventEmitter from 'MyEventEmitter';
 
-MyEventEmitter.event('foo').on(() => {
-    console.log('foo');
-}).event('bar').on((name: string) => {
-    console.log('Hello, ' + name);
-}).event('baz').on((id: number, name: string) => {
-    console.log('Hello, ' + name '. Your id is ' + id);
-});
+MyEventEmitter.event('foo').on(() =>
+    console.log('foo')
+).event('bar').on(name =>
+    console.log(`Hello, ${name}`)
+).event('baz').on(({id, name}) =>
+    console.log(`Hello, ${name}. Your id is ${id}`)
+);
 
 MyEventEmitter.event('foo').emit();
 MyEventEmitter.event('bar').emit('kimamula');
-MyEventEmitter.event('baz').emit(1, 'kimamula');
+MyEventEmitter.event('baz').emit({id: 1, name: 'kimamula'});
 
 // The below codes raise compilation errors
 MyEventEmitter.event('fo').emit(); // typo
 MyEventEmitter.event('bar').on((id: number) => {}); // wrong argument type
-MyEventEmitter.event('baz').emit(1); // wrong number of argument
+MyEventEmitter.event('baz').emit(1); // wrong argument type
 ```

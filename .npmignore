@@ -1,7 +1,0 @@
-src
-test
-typings
-.idea
-*.iml
-tsd.json
-dts-bundle.js

@@ -1,6 +1,9 @@
 node_modules
 typings
-dist
+dist/*
+!.gitkeep
 src/*.js
 test/*.js
+src/*.d.ts
+test/*.d.ts
 *.log
