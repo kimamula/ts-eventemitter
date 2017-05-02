@@ -1,3 +1,8 @@
+# DEPRECATED
+
+As of TypeScript 2.1, you can easily define a type safe EventEmitter with `keyof` and therefore you don't need this package anymore.
+See https://github.com/kimamula/TypeScript-definition-of-EventEmitter-with-keyof.
+
 ts-eventemitter
 ==========
 A thin TypeScript wrapper for EventEmitter which provides with type-safety.
